@@ -164,17 +164,14 @@ local function OpeningLoop()
 end
 
 -- Modul-Initialisierung
-function CratesOpener:Init(window, automationTab, lobbySection)
+function CratesOpener:Init(window, automationTab)
     print("[CRATES OPENER] Modul wird initialisiert...")
 
     -- Whitelist updaten
     UpdateWhitelist()
 
-    -- Verwende die übergebene Lobby Section
-    local LobbySection = lobbySection
-
-    -- Toggle für Auto-Open
-    LobbySection:Toggle({
+    -- Toggle für Auto-Open (Toggle must be created on Tab, not Section)
+    automationTab:Toggle({
         Title = "Auto Open Crates",
         Desc = "Öffnet automatisch alle Treasure Chests im Inventar",
         Value = false,

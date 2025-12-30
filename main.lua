@@ -22,7 +22,7 @@ local GITHUB_CONFIG = {
     Username = "chillzinhoaut",
     Repository = "SBTD-Script",
     Branch = "main",
-    Version = "1.2.2",  -- WICHTIG: Erhöhe diese Nummer bei jedem Update für sofortige Änderungen!
+    Version = "1.2.3",  -- WICHTIG: Erhöhe diese Nummer bei jedem Update für sofortige Änderungen!
 }
 
 -- Basis-URL für Module mit Cache-Busting
@@ -101,11 +101,6 @@ local AutomationTab = Window:Tab({
     Icon = "rbxassetid://10734950309"
 })
 
--- Lobby Section (Alle Features werden hier hinzugefügt)
-local LobbySection = AutomationTab:Section({
-    Title = "Lobby"
-})
-
 -- ============================================================
 -- MODULE LOADING
 -- ============================================================
@@ -116,7 +111,7 @@ print("[MASTER] Lade Module von GitHub...")
 Modules.RewardClaimer = LoadModule("reward_claimer")
 
 if Modules.RewardClaimer then
-    Modules.RewardClaimer:Init(Window, AutomationTab, LobbySection)
+    Modules.RewardClaimer:Init(Window, AutomationTab)
 else
     warn("[MASTER] Reward Claimer Modul konnte nicht geladen werden!")
     warn("[MASTER] Überprüfe die GitHub-Konfiguration und stelle sicher, dass modules/reward_claimer.lua existiert!")
@@ -126,7 +121,7 @@ end
 Modules.CratesOpener = LoadModule("crates_opener")
 
 if Modules.CratesOpener then
-    Modules.CratesOpener:Init(Window, AutomationTab, LobbySection)
+    Modules.CratesOpener:Init(Window, AutomationTab)
 else
     warn("[MASTER] Crates Opener Modul konnte nicht geladen werden!")
 end
@@ -135,7 +130,7 @@ end
 Modules.LobbyFeatures = LoadModule("lobby_features")
 
 if Modules.LobbyFeatures then
-    Modules.LobbyFeatures:Init(Window, AutomationTab, LobbySection)
+    Modules.LobbyFeatures:Init(Window, AutomationTab)
 else
     warn("[MASTER] Lobby Features Modul konnte nicht geladen werden!")
 end

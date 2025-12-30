@@ -97,7 +97,7 @@ function LobbyFeatures.Prestige()
 end
 
 -- Modul-Initialisierung
-function LobbyFeatures:Init(window, automationTab, lobbySection)
+function LobbyFeatures:Init(window, automationTab)
     print("[LOBBY FEATURES] Modul wird initialisiert...")
 
     -- Services initialisieren
@@ -106,11 +106,8 @@ function LobbyFeatures:Init(window, automationTab, lobbySection)
         return
     end
 
-    -- Verwende die übergebene Lobby Section
-    local LobbySection = lobbySection
-
     -- Auto Claim ALL Achievements (kombiniert alle 4 Typen)
-    LobbySection:Toggle({
+    automationTab:Toggle({
         Title = "Auto Claim Achievements",
         Desc = "Claimt alle Achievements (Daily, Weekly, Infinite, Party)",
         Value = false,
@@ -128,7 +125,7 @@ function LobbyFeatures:Init(window, automationTab, lobbySection)
     })
 
     -- Auto Claim Season Pass
-    LobbySection:Toggle({
+    automationTab:Toggle({
         Title = "Auto Claim Pass",
         Desc = "Claimt automatisch alle Season Pass Belohnungen",
         Value = false,
@@ -140,7 +137,7 @@ function LobbyFeatures:Init(window, automationTab, lobbySection)
     })
 
     -- Auto Prestige Pass
-    LobbySection:Toggle({
+    automationTab:Toggle({
         Title = "Auto Prestige Pass",
         Desc = "Führt automatisch Season Pass Prestige durch",
         Value = false,
@@ -152,7 +149,7 @@ function LobbyFeatures:Init(window, automationTab, lobbySection)
     })
 
     -- Auto Prestige
-    LobbySection:Toggle({
+    automationTab:Toggle({
         Title = "Auto Prestige",
         Desc = "Führt automatisch Prestige durch",
         Value = false,
