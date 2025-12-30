@@ -213,7 +213,7 @@ function Teleport:Init(window, automationTab)
     end
 
     -- Teleport Tab erstellen
-    local TeleportTab = window:CreateTab({
+    local TeleportTab = window:Tab({
         Title = "Teleport",
         Icon = "rbxassetid://10734898355"
     })
