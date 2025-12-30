@@ -1,0 +1,13 @@
+# Claude Code
+.claude/
+
+# Temporary files
+*.tmp
+*.log
+
+# Old/Test files
+test_cdn.lua
+TROUBLESHOOTING_403.md
+SOLUTIONS_SUMMARY.md
+lobby_automation.lua
+Reward Blocker.txt
