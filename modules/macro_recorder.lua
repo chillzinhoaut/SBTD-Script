@@ -24,16 +24,16 @@ if success1 and TowerService then
     local childSuccess = pcall(function()
         for _, v in pairs(TowerService:GetChildren()) do
             if v:IsA("RemoteFunction") then
-                local vPath = pcall(function() return v:GetFullName() end)
-                print("  - RemoteFunction:", v.Name, "|", vPath and v:GetFullName() or "N/A")
+                local vPathSuccess, vPath = pcall(function() return v:GetFullName() end)
+                print("  - RemoteFunction:", v.Name, "|", vPathSuccess and vPath or "N/A")
             end
         end
     end)
 
     if TowerService.PlaceTower then
         print("[MACRO DEBUG] PlaceTower type:", typeof(TowerService.PlaceTower))
-        local ptPath = pcall(function() return TowerService.PlaceTower:GetFullName() end)
-        print("[MACRO DEBUG] PlaceTower path:", ptPath and TowerService.PlaceTower:GetFullName() or "N/A")
+        local ptPathSuccess, ptPath = pcall(function() return TowerService.PlaceTower:GetFullName() end)
+        print("[MACRO DEBUG] PlaceTower path:", ptPathSuccess and ptPath or "N/A")
         print("[MACRO DEBUG] PlaceTower.InvokeServer:", tostring(TowerService.PlaceTower.InvokeServer))
     else
         print("[MACRO DEBUG] TowerService.PlaceTower: nil")
@@ -57,16 +57,16 @@ if success2 and GameService then
     local childSuccess = pcall(function()
         for _, v in pairs(GameService:GetChildren()) do
             if v:IsA("RemoteFunction") then
-                local vPath = pcall(function() return v:GetFullName() end)
-                print("  - RemoteFunction:", v.Name, "|", vPath and v:GetFullName() or "N/A")
+                local vPathSuccess, vPath = pcall(function() return v:GetFullName() end)
+                print("  - RemoteFunction:", v.Name, "|", vPathSuccess and vPath or "N/A")
             end
         end
     end)
 
     if GameService.UpgradeTower then
         print("[MACRO DEBUG] UpgradeTower type:", typeof(GameService.UpgradeTower))
-        local utPath = pcall(function() return GameService.UpgradeTower:GetFullName() end)
-        print("[MACRO DEBUG] UpgradeTower path:", utPath and GameService.UpgradeTower:GetFullName() or "N/A")
+        local utPathSuccess, utPath = pcall(function() return GameService.UpgradeTower:GetFullName() end)
+        print("[MACRO DEBUG] UpgradeTower path:", utPathSuccess and utPath or "N/A")
         print("[MACRO DEBUG] UpgradeTower.InvokeServer:", tostring(GameService.UpgradeTower.InvokeServer))
     else
         print("[MACRO DEBUG] GameService.UpgradeTower: nil")
