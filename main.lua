@@ -22,7 +22,7 @@ local GITHUB_CONFIG = {
     Username = "chillzinhoaut",
     Repository = "SBTD-Script",
     Branch = "main",
-    Version = "1.2.3",  -- WICHTIG: Erhöhe diese Nummer bei jedem Update für sofortige Änderungen!
+    Version = "1.3.0",  -- WICHTIG: Erhöhe diese Nummer bei jedem Update für sofortige Änderungen!
 }
 
 -- Basis-URL für Module mit Cache-Busting
@@ -133,6 +133,15 @@ if Modules.LobbyFeatures then
     Modules.LobbyFeatures:Init(Window, AutomationTab)
 else
     warn("[MASTER] Lobby Features Modul konnte nicht geladen werden!")
+end
+
+-- Teleport Modul laden
+Modules.Teleport = LoadModule("teleport")
+
+if Modules.Teleport then
+    Modules.Teleport:Init(Window, AutomationTab)
+else
+    warn("[MASTER] Teleport Modul konnte nicht geladen werden!")
 end
 
 -- Hier können weitere Module geladen werden:
