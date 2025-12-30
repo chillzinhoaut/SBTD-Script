@@ -12,49 +12,68 @@ local spyModeEnabled = false
 
 local success1 = pcall(function()
     TowerService = ReplicatedStorage.Packages._Index["acecateer_knit@1.7.1"].knit.Services.TowerService.RF
-    print("[MACRO DEBUG] TowerService loaded:", TowerService)
-    print("[MACRO DEBUG] TowerService path:", TowerService:GetFullName())
+end)
+
+if success1 and TowerService then
+    print("[MACRO DEBUG] TowerService loaded:", tostring(TowerService))
+
+    local pathSuccess, pathResult = pcall(function() return TowerService:GetFullName() end)
+    print("[MACRO DEBUG] TowerService path:", pathSuccess and pathResult or "N/A")
 
     print("[MACRO DEBUG] TowerService RemoteFunctions:")
-    for _, v in pairs(TowerService:GetChildren()) do
-        if v:IsA("RemoteFunction") then
-            print("  - RemoteFunction:", v.Name, "|", v:GetFullName())
+    local childSuccess = pcall(function()
+        for _, v in pairs(TowerService:GetChildren()) do
+            if v:IsA("RemoteFunction") then
+                local vPath = pcall(function() return v:GetFullName() end)
+                print("  - RemoteFunction:", v.Name, "|", vPath and v:GetFullName() or "N/A")
+            end
         end
-    end
+    end)
 
-    print("[MACRO DEBUG] TowerService.PlaceTower:", TowerService.PlaceTower)
     if TowerService.PlaceTower then
         print("[MACRO DEBUG] PlaceTower type:", typeof(TowerService.PlaceTower))
-        print("[MACRO DEBUG] PlaceTower path:", TowerService.PlaceTower:GetFullName())
-        print("[MACRO DEBUG] PlaceTower.InvokeServer:", TowerService.PlaceTower.InvokeServer)
+        local ptPath = pcall(function() return TowerService.PlaceTower:GetFullName() end)
+        print("[MACRO DEBUG] PlaceTower path:", ptPath and TowerService.PlaceTower:GetFullName() or "N/A")
+        print("[MACRO DEBUG] PlaceTower.InvokeServer:", tostring(TowerService.PlaceTower.InvokeServer))
+    else
+        print("[MACRO DEBUG] TowerService.PlaceTower: nil")
     end
-end)
+else
+    print("[MACRO DEBUG] ERROR: Failed to load TowerService")
+    TowerService = nil
+end
 
 local success2 = pcall(function()
     GameService = ReplicatedStorage.Packages._Index["acecateer_knit@1.7.1"].knit.Services.GameService.RF
-    print("[MACRO DEBUG] GameService loaded:", GameService)
-    print("[MACRO DEBUG] GameService path:", GameService:GetFullName())
-
-    print("[MACRO DEBUG] GameService RemoteFunctions:")
-    for _, v in pairs(GameService:GetChildren()) do
-        if v:IsA("RemoteFunction") then
-            print("  - RemoteFunction:", v.Name, "|", v:GetFullName())
-        end
-    end
-
-    print("[MACRO DEBUG] GameService.UpgradeTower:", GameService.UpgradeTower)
-    if GameService.UpgradeTower then
-        print("[MACRO DEBUG] UpgradeTower type:", typeof(GameService.UpgradeTower))
-        print("[MACRO DEBUG] UpgradeTower path:", GameService.UpgradeTower:GetFullName())
-        print("[MACRO DEBUG] UpgradeTower.InvokeServer:", GameService.UpgradeTower.InvokeServer)
-    end
 end)
 
-if not success1 then
-    print("[MACRO DEBUG] ERROR: Failed to load TowerService")
-end
-if not success2 then
+if success2 and GameService then
+    print("[MACRO DEBUG] GameService loaded:", tostring(GameService))
+
+    local pathSuccess, pathResult = pcall(function() return GameService:GetFullName() end)
+    print("[MACRO DEBUG] GameService path:", pathSuccess and pathResult or "N/A")
+
+    print("[MACRO DEBUG] GameService RemoteFunctions:")
+    local childSuccess = pcall(function()
+        for _, v in pairs(GameService:GetChildren()) do
+            if v:IsA("RemoteFunction") then
+                local vPath = pcall(function() return v:GetFullName() end)
+                print("  - RemoteFunction:", v.Name, "|", vPath and v:GetFullName() or "N/A")
+            end
+        end
+    end)
+
+    if GameService.UpgradeTower then
+        print("[MACRO DEBUG] UpgradeTower type:", typeof(GameService.UpgradeTower))
+        local utPath = pcall(function() return GameService.UpgradeTower:GetFullName() end)
+        print("[MACRO DEBUG] UpgradeTower path:", utPath and GameService.UpgradeTower:GetFullName() or "N/A")
+        print("[MACRO DEBUG] UpgradeTower.InvokeServer:", tostring(GameService.UpgradeTower.InvokeServer))
+    else
+        print("[MACRO DEBUG] GameService.UpgradeTower: nil")
+    end
+else
     print("[MACRO DEBUG] ERROR: Failed to load GameService")
+    GameService = nil
 end
 
 local currentMacro = nil
@@ -273,11 +292,14 @@ local function startRecording()
 
             if method == "InvokeServer" then
                 if spyModeEnabled then
-                    print("[MACRO SPY] InvokeServer called on:", self:GetFullName())
+                    local spyPath = "unknown"
+                    pcall(function() spyPath = self:GetFullName() end)
+                    print("[MACRO SPY] InvokeServer called on:", spyPath)
                     print("[MACRO SPY] Arguments:", ...)
                 end
 
-                local selfPath = self:GetFullName()
+                local selfPath = "unknown"
+                pcall(function() selfPath = self:GetFullName() end)
                 local selfName = self.Name
 
                 if selfName == "PlaceTower" or string.find(selfPath, "PlaceTower") then
