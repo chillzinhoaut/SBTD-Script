@@ -196,13 +196,6 @@ local function TeleportToMatchmaker(modeName)
     return false
 end
 
--- Stop Failsafe
-local function StopFailsafe()
-    isRetrying = false
-    attemptCount = 0
-    print("[TELEPORT] Failsafe gestoppt")
-end
-
 -- Modul Initialisierung
 function Teleport:Init(window, automationTab)
     print("[TELEPORT] Modul wird initialisiert...")
@@ -222,7 +215,7 @@ function Teleport:Init(window, automationTab)
     TeleportTab:Dropdown({
         Title = "Mode",
         Desc = "Wähle den Spielmodus",
-        Options = MODES,
+        Values = MODES,
         Value = Teleport.SelectedMode,
         Callback = function(value)
             Teleport.SelectedMode = value
@@ -234,7 +227,7 @@ function Teleport:Init(window, automationTab)
     TeleportTab:Dropdown({
         Title = "Story Map",
         Desc = "Wähle die Map",
-        Options = MAPS,
+        Values = MAPS,
         Value = Teleport.SelectedMap,
         Callback = function(value)
             Teleport.SelectedMap = value
@@ -246,7 +239,7 @@ function Teleport:Init(window, automationTab)
     TeleportTab:Dropdown({
         Title = "Chapter",
         Desc = "Wähle das Chapter",
-        Options = {"1","2","3","4","5","6","7","8","9","10"},
+        Values = {"1","2","3","4","5","6","7","8","9","10"},
         Value = tostring(Teleport.SelectedChapter),
         Callback = function(value)
             Teleport.SelectedChapter = tonumber(value)
@@ -258,7 +251,7 @@ function Teleport:Init(window, automationTab)
     TeleportTab:Dropdown({
         Title = "Difficulty",
         Desc = "Wähle die Schwierigkeit",
-        Options = {"Normal", "Hard", "Nightmare", "DavyJones"},
+        Values = {"Normal", "Hard", "Nightmare", "DavyJones"},
         Value = DIFF_NAMES[Teleport.SelectedDiff],
         Callback = function(value)
             Teleport.SelectedDiff = DIFF_TO_NUM[value]
@@ -272,22 +265,10 @@ function Teleport:Init(window, automationTab)
         Desc = "Startet den Teleport mit Failsafe",
         Callback = function()
             if Teleport.SelectedMode == "Story" then
-                -- Proper stop/wait vor neuem Start
-                StopFailsafe()
-                repeat task.wait(0.05) until not isRetrying
                 RunStorySequence()
             else
                 TeleportToMatchmaker(Teleport.SelectedMode)
             end
-        end
-    })
-
-    -- Stop Button
-    TeleportTab:Button({
-        Title = "🛑 STOP FAILSAFE",
-        Desc = "Stoppt die Retry-Schleife",
-        Callback = function()
-            StopFailsafe()
         end
     })
 
@@ -301,7 +282,8 @@ end
 
 -- Cleanup
 function Teleport:Cleanup()
-    StopFailsafe()
+    isRetrying = false
+    attemptCount = 0
     if onTeleportConnection then
         onTeleportConnection:Disconnect()
         onTeleportConnection = nil
