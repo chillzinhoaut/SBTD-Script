@@ -107,14 +107,13 @@ function RewardClaimer:Init(window, automationTab, lobbySection)
     -- Toggle für Auto-Claim
     local ClaimToggle = LobbySection:Toggle({
         Title = "Auto Claim Timed Rewards",
-        Description = "Claimt automatisch alle Daily Rewards (1-9) im Loop",
-        Default = false,
+        Desc = "Claimt automatisch alle Daily Rewards (1-9) im Loop",
+        Value = false,
         Callback = function(value)
             RewardClaimer.Enabled = value
 
             if value then
                 print("[REWARD CLAIMER] Auto-Claim aktiviert!")
-                -- Starte Loop in neuem Thread
                 task.spawn(ClaimLoop)
             else
                 print("[REWARD CLAIMER] Auto-Claim deaktiviert!")

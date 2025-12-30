@@ -176,8 +176,8 @@ function CratesOpener:Init(window, automationTab, lobbySection)
     -- Toggle für Auto-Open
     LobbySection:Toggle({
         Title = "Auto Open Crates",
-        Description = "Öffnet automatisch alle Treasure Chests im Inventar",
-        Default = false,
+        Desc = "Öffnet automatisch alle Treasure Chests im Inventar",
+        Value = false,
         Callback = function(value)
             CratesOpener.Enabled = value
 

@@ -112,8 +112,8 @@ function LobbyFeatures:Init(window, automationTab, lobbySection)
     -- Auto Claim ALL Achievements (kombiniert alle 4 Typen)
     LobbySection:Toggle({
         Title = "Auto Claim Achievements",
-        Description = "Claimt alle Achievements (Daily, Weekly, Infinite, Party)",
-        Default = false,
+        Desc = "Claimt alle Achievements (Daily, Weekly, Infinite, Party)",
+        Value = false,
         Callback = function(value)
             if value then
                 LobbyFeatures.ClaimAchievements("Daily")
@@ -130,8 +130,8 @@ function LobbyFeatures:Init(window, automationTab, lobbySection)
     -- Auto Claim Season Pass
     LobbySection:Toggle({
         Title = "Auto Claim Pass",
-        Description = "Claimt automatisch alle Season Pass Belohnungen",
-        Default = false,
+        Desc = "Claimt automatisch alle Season Pass Belohnungen",
+        Value = false,
         Callback = function(value)
             if value then
                 LobbyFeatures.ClaimPass()
@@ -142,8 +142,8 @@ function LobbyFeatures:Init(window, automationTab, lobbySection)
     -- Auto Prestige Pass
     LobbySection:Toggle({
         Title = "Auto Prestige Pass",
-        Description = "Führt automatisch Season Pass Prestige durch",
-        Default = false,
+        Desc = "Führt automatisch Season Pass Prestige durch",
+        Value = false,
         Callback = function(value)
             if value then
                 LobbyFeatures.PrestigePass()
@@ -154,8 +154,8 @@ function LobbyFeatures:Init(window, automationTab, lobbySection)
     -- Auto Prestige
     LobbySection:Toggle({
         Title = "Auto Prestige",
-        Description = "Führt automatisch Prestige durch",
-        Default = false,
+        Desc = "Führt automatisch Prestige durch",
+        Value = false,
         Callback = function(value)
             if value then
                 LobbyFeatures.Prestige()
