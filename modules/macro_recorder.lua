@@ -8,19 +8,46 @@ local StarterGui = game:GetService("StarterGui")
 print("[MACRO DEBUG] Loading services...")
 
 local TowerService, GameService
+local spyModeEnabled = false
 
 local success1 = pcall(function()
     TowerService = ReplicatedStorage.Packages._Index["acecateer_knit@1.7.1"].knit.Services.TowerService.RF
     print("[MACRO DEBUG] TowerService loaded:", TowerService)
+    print("[MACRO DEBUG] TowerService path:", TowerService:GetFullName())
+
+    print("[MACRO DEBUG] TowerService RemoteFunctions:")
+    for _, v in pairs(TowerService:GetChildren()) do
+        if v:IsA("RemoteFunction") then
+            print("  - RemoteFunction:", v.Name, "|", v:GetFullName())
+        end
+    end
+
     print("[MACRO DEBUG] TowerService.PlaceTower:", TowerService.PlaceTower)
-    print("[MACRO DEBUG] TowerService.PlaceTower.InvokeServer:", TowerService.PlaceTower.InvokeServer)
+    if TowerService.PlaceTower then
+        print("[MACRO DEBUG] PlaceTower type:", typeof(TowerService.PlaceTower))
+        print("[MACRO DEBUG] PlaceTower path:", TowerService.PlaceTower:GetFullName())
+        print("[MACRO DEBUG] PlaceTower.InvokeServer:", TowerService.PlaceTower.InvokeServer)
+    end
 end)
 
 local success2 = pcall(function()
     GameService = ReplicatedStorage.Packages._Index["acecateer_knit@1.7.1"].knit.Services.GameService.RF
     print("[MACRO DEBUG] GameService loaded:", GameService)
+    print("[MACRO DEBUG] GameService path:", GameService:GetFullName())
+
+    print("[MACRO DEBUG] GameService RemoteFunctions:")
+    for _, v in pairs(GameService:GetChildren()) do
+        if v:IsA("RemoteFunction") then
+            print("  - RemoteFunction:", v.Name, "|", v:GetFullName())
+        end
+    end
+
     print("[MACRO DEBUG] GameService.UpgradeTower:", GameService.UpgradeTower)
-    print("[MACRO DEBUG] GameService.UpgradeTower.InvokeServer:", GameService.UpgradeTower.InvokeServer)
+    if GameService.UpgradeTower then
+        print("[MACRO DEBUG] UpgradeTower type:", typeof(GameService.UpgradeTower))
+        print("[MACRO DEBUG] UpgradeTower path:", GameService.UpgradeTower:GetFullName())
+        print("[MACRO DEBUG] UpgradeTower.InvokeServer:", GameService.UpgradeTower.InvokeServer)
+    end
 end)
 
 if not success1 then
@@ -89,6 +116,7 @@ local function startRecording()
 
     print("[MACRO DEBUG] Starting recording process...")
     print("[MACRO DEBUG] hookfunction available:", hookfunction ~= nil)
+    print("[MACRO DEBUG] hookmetamethod available:", hookmetamethod ~= nil)
 
     isRecording = true
     towerInstanceCounts = {}
@@ -108,134 +136,266 @@ local function startRecording()
         return
     end
 
-    if not hookfunction then
-        print("[MACRO DEBUG] ERROR: hookfunction not available in this executor!")
-        SendNotification("Recording Error", "hookfunction not supported")
-        isRecording = false
-        return
-    end
-
     local oldPlaceTower = nil
     local oldUpgradeTower = nil
+    local namecallHook = nil
 
-    print("[MACRO DEBUG] Attempting to hook TowerService.PlaceTower.InvokeServer...")
-    local hookSuccess1 = pcall(function()
-        oldPlaceTower = hookfunction(TowerService.PlaceTower.InvokeServer, function(self, cframe, slot)
-            print("[MACRO DEBUG] HOOK CALLED: PlaceTower")
-            print("[MACRO DEBUG] - CFrame:", cframe)
-            print("[MACRO DEBUG] - Slot:", slot)
-            print("[MACRO DEBUG] - isRecording:", isRecording)
+    if hookfunction then
+        print("[MACRO DEBUG] Using hookfunction method...")
 
-            local result = oldPlaceTower(self, cframe, slot)
-            print("[MACRO DEBUG] - PlaceTower result:", result)
+        print("[MACRO DEBUG] Attempting to hook TowerService.PlaceTower.InvokeServer...")
+        local hookSuccess1 = pcall(function()
+            oldPlaceTower = hookfunction(TowerService.PlaceTower.InvokeServer, function(self, cframe, slot)
+                print("[MACRO DEBUG] HOOK CALLED: PlaceTower (hookfunction)")
+                print("[MACRO DEBUG] - CFrame:", cframe)
+                print("[MACRO DEBUG] - Slot:", slot)
+                print("[MACRO DEBUG] - isRecording:", isRecording)
 
-            if isRecording and result then
-                print("[MACRO DEBUG] Recording tower placement...")
-                task.spawn(function()
-                    task.wait(0.1)
+                local result = oldPlaceTower(self, cframe, slot)
+                print("[MACRO DEBUG] - PlaceTower result:", result)
 
-                    local friendlies = workspace:FindFirstChild("Friendlies")
-                    print("[MACRO DEBUG] - Friendlies folder:", friendlies)
-                    if not friendlies then
-                        print("[MACRO DEBUG] - ERROR: No Friendlies folder found!")
-                        return
-                    end
+                if isRecording and result then
+                    print("[MACRO DEBUG] Recording tower placement...")
+                    task.spawn(function()
+                        task.wait(0.1)
 
-                    local newestTower = nil
-                    local newestTime = 0
+                        local friendlies = workspace:FindFirstChild("Friendlies")
+                        print("[MACRO DEBUG] - Friendlies folder:", friendlies)
+                        if not friendlies then
+                            print("[MACRO DEBUG] - ERROR: No Friendlies folder found!")
+                            return
+                        end
 
-                    for _, tower in ipairs(friendlies:GetChildren()) do
-                        if tower:IsA("Model") and tower.PrimaryPart then
-                            local towerTime = tick()
-                            if towerTime > newestTime then
-                                newestTime = towerTime
-                                newestTower = tower
+                        local newestTower = nil
+                        local newestTime = 0
+
+                        for _, tower in ipairs(friendlies:GetChildren()) do
+                            if tower:IsA("Model") and tower.PrimaryPart then
+                                local towerTime = tick()
+                                if towerTime > newestTime then
+                                    newestTime = towerTime
+                                    newestTower = tower
+                                end
                             end
                         end
-                    end
 
-                    if newestTower then
-                        local towerName = newestTower.Name
-                        local instanceIndex = getNextInstanceIndex(towerName)
+                        if newestTower then
+                            local towerName = newestTower.Name
+                            local instanceIndex = getNextInstanceIndex(towerName)
 
-                        table.insert(currentMacro.actions, {
-                            type = "place",
-                            towerName = towerName,
-                            cframe = cframe,
-                            slot = slot,
-                            instanceIndex = instanceIndex
-                        })
+                            table.insert(currentMacro.actions, {
+                                type = "place",
+                                towerName = towerName,
+                                cframe = cframe,
+                                slot = slot,
+                                instanceIndex = instanceIndex
+                            })
 
-                        print("[MACRO DEBUG] - Tower recorded:", towerName, "#" .. instanceIndex)
-                        print("[MACRO DEBUG] - Total actions:", #currentMacro.actions)
-                        SendNotification("Tower Recorded", towerName .. " #" .. instanceIndex)
-                    else
-                        print("[MACRO DEBUG] - ERROR: Could not find newest tower!")
-                    end
-                end)
-            end
+                            print("[MACRO DEBUG] - Tower recorded:", towerName, "#" .. instanceIndex)
+                            print("[MACRO DEBUG] - Total actions:", #currentMacro.actions)
+                            SendNotification("Tower Recorded", towerName .. " #" .. instanceIndex)
+                        else
+                            print("[MACRO DEBUG] - ERROR: Could not find newest tower!")
+                        end
+                    end)
+                end
 
-            return result
+                return result
+            end)
+            print("[MACRO DEBUG] PlaceTower hook successful!")
         end)
-        print("[MACRO DEBUG] PlaceTower hook successful!")
-    end)
 
-    if not hookSuccess1 then
-        print("[MACRO DEBUG] ERROR: Failed to hook PlaceTower!")
+        if not hookSuccess1 then
+            print("[MACRO DEBUG] ERROR: Failed to hook PlaceTower!")
+        end
+
+        print("[MACRO DEBUG] Attempting to hook GameService.UpgradeTower.InvokeServer...")
+        local hookSuccess2 = pcall(function()
+            oldUpgradeTower = hookfunction(GameService.UpgradeTower.InvokeServer, function(self, towerId)
+                print("[MACRO DEBUG] HOOK CALLED: UpgradeTower (hookfunction)")
+                print("[MACRO DEBUG] - Tower ID:", towerId)
+                print("[MACRO DEBUG] - isRecording:", isRecording)
+
+                if isRecording then
+                    print("[MACRO DEBUG] Recording tower upgrade...")
+                    local friendlies = workspace:FindFirstChild("Friendlies")
+                    if friendlies then
+                        for _, tower in ipairs(friendlies:GetChildren()) do
+                            if tower:IsA("Model") then
+                                local idValue = tower:FindFirstChild("Id")
+                                if idValue and idValue.Value == towerId then
+                                    local towerName = tower.Name
+
+                                    local instanceIndex = 0
+                                    for _, action in ipairs(currentMacro.actions) do
+                                        if action.type == "place" and action.towerName == towerName then
+                                            instanceIndex = action.instanceIndex
+                                        end
+                                    end
+
+                                    table.insert(currentMacro.actions, {
+                                        type = "upgrade",
+                                        towerName = towerName,
+                                        instanceIndex = instanceIndex
+                                    })
+
+                                    print("[MACRO DEBUG] - Upgrade recorded:", towerName, "#" .. instanceIndex)
+                                    print("[MACRO DEBUG] - Total actions:", #currentMacro.actions)
+                                    SendNotification("Upgrade Recorded", towerName .. " #" .. instanceIndex)
+                                    break
+                                end
+                            end
+                        end
+                    else
+                        print("[MACRO DEBUG] - ERROR: No Friendlies folder found!")
+                    end
+                end
+
+                return oldUpgradeTower(self, towerId)
+            end)
+            print("[MACRO DEBUG] UpgradeTower hook successful!")
+        end)
+
+        if not hookSuccess2 then
+            print("[MACRO DEBUG] ERROR: Failed to hook UpgradeTower!")
+        end
+
+        print("[MACRO DEBUG] hookfunction setup complete")
     end
 
-    print("[MACRO DEBUG] Attempting to hook GameService.UpgradeTower.InvokeServer...")
-    local hookSuccess2 = pcall(function()
-        oldUpgradeTower = hookfunction(GameService.UpgradeTower.InvokeServer, function(self, towerId)
-            print("[MACRO DEBUG] HOOK CALLED: UpgradeTower")
-            print("[MACRO DEBUG] - Tower ID:", towerId)
-            print("[MACRO DEBUG] - isRecording:", isRecording)
+    if hookmetamethod then
+        print("[MACRO DEBUG] Setting up __namecall metamethod hook...")
 
-            if isRecording then
-                print("[MACRO DEBUG] Recording tower upgrade...")
-                local friendlies = workspace:FindFirstChild("Friendlies")
-                if friendlies then
-                    for _, tower in ipairs(friendlies:GetChildren()) do
-                        if tower:IsA("Model") then
-                            local idValue = tower:FindFirstChild("Id")
-                            if idValue and idValue.Value == towerId then
-                                local towerName = tower.Name
+        local oldNamecall
+        oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+            local method = getnamecallmethod()
+            local args = {...}
 
-                                local instanceIndex = 0
-                                for _, action in ipairs(currentMacro.actions) do
-                                    if action.type == "place" and action.towerName == towerName then
-                                        instanceIndex = action.instanceIndex
+            if method == "InvokeServer" then
+                if spyModeEnabled then
+                    print("[MACRO SPY] InvokeServer called on:", self:GetFullName())
+                    print("[MACRO SPY] Arguments:", ...)
+                end
+
+                local selfPath = self:GetFullName()
+                local selfName = self.Name
+
+                if selfName == "PlaceTower" or string.find(selfPath, "PlaceTower") then
+                    print("[MACRO DEBUG] __namecall DETECTED PlaceTower!")
+                    print("[MACRO DEBUG] - Path:", selfPath)
+                    print("[MACRO DEBUG] - Args count:", select("#", ...))
+                    print("[MACRO DEBUG] - Arg1 (CFrame):", args[1])
+                    print("[MACRO DEBUG] - Arg2 (Slot):", args[2])
+                    print("[MACRO DEBUG] - isRecording:", isRecording)
+
+                    if isRecording then
+                        local cframe = args[1]
+                        local slot = args[2]
+
+                        task.spawn(function()
+                            local result = oldNamecall(self, ...)
+                            print("[MACRO DEBUG] - PlaceTower result:", result)
+
+                            if result then
+                                task.wait(0.1)
+
+                                local friendlies = workspace:FindFirstChild("Friendlies")
+                                if friendlies then
+                                    local newestTower = nil
+                                    local newestTime = 0
+
+                                    for _, tower in ipairs(friendlies:GetChildren()) do
+                                        if tower:IsA("Model") and tower.PrimaryPart then
+                                            local towerTime = tick()
+                                            if towerTime > newestTime then
+                                                newestTime = towerTime
+                                                newestTower = tower
+                                            end
+                                        end
+                                    end
+
+                                    if newestTower then
+                                        local towerName = newestTower.Name
+                                        local instanceIndex = getNextInstanceIndex(towerName)
+
+                                        table.insert(currentMacro.actions, {
+                                            type = "place",
+                                            towerName = towerName,
+                                            cframe = cframe,
+                                            slot = slot,
+                                            instanceIndex = instanceIndex
+                                        })
+
+                                        print("[MACRO DEBUG] - Tower recorded via __namecall:", towerName, "#" .. instanceIndex)
+                                        print("[MACRO DEBUG] - Total actions:", #currentMacro.actions)
+                                        SendNotification("Tower Recorded", towerName .. " #" .. instanceIndex)
                                     end
                                 end
+                            end
 
-                                table.insert(currentMacro.actions, {
-                                    type = "upgrade",
-                                    towerName = towerName,
-                                    instanceIndex = instanceIndex
-                                })
+                            return result
+                        end)
 
-                                print("[MACRO DEBUG] - Upgrade recorded:", towerName, "#" .. instanceIndex)
-                                print("[MACRO DEBUG] - Total actions:", #currentMacro.actions)
-                                SendNotification("Upgrade Recorded", towerName .. " #" .. instanceIndex)
-                                break
+                        return oldNamecall(self, ...)
+                    end
+                end
+
+                if selfName == "UpgradeTower" or string.find(selfPath, "UpgradeTower") then
+                    print("[MACRO DEBUG] __namecall DETECTED UpgradeTower!")
+                    print("[MACRO DEBUG] - Path:", selfPath)
+                    print("[MACRO DEBUG] - Args count:", select("#", ...))
+                    print("[MACRO DEBUG] - Arg1 (TowerID):", args[1])
+                    print("[MACRO DEBUG] - isRecording:", isRecording)
+
+                    if isRecording then
+                        local towerId = args[1]
+
+                        local friendlies = workspace:FindFirstChild("Friendlies")
+                        if friendlies then
+                            for _, tower in ipairs(friendlies:GetChildren()) do
+                                if tower:IsA("Model") then
+                                    local idValue = tower:FindFirstChild("Id")
+                                    if idValue and idValue.Value == towerId then
+                                        local towerName = tower.Name
+
+                                        local instanceIndex = 0
+                                        for _, action in ipairs(currentMacro.actions) do
+                                            if action.type == "place" and action.towerName == towerName then
+                                                instanceIndex = action.instanceIndex
+                                            end
+                                        end
+
+                                        table.insert(currentMacro.actions, {
+                                            type = "upgrade",
+                                            towerName = towerName,
+                                            instanceIndex = instanceIndex
+                                        })
+
+                                        print("[MACRO DEBUG] - Upgrade recorded via __namecall:", towerName, "#" .. instanceIndex)
+                                        print("[MACRO DEBUG] - Total actions:", #currentMacro.actions)
+                                        SendNotification("Upgrade Recorded", towerName .. " #" .. instanceIndex)
+                                        break
+                                    end
+                                end
                             end
                         end
                     end
-                else
-                    print("[MACRO DEBUG] - ERROR: No Friendlies folder found!")
                 end
             end
 
-            return oldUpgradeTower(self, towerId)
+            return oldNamecall(self, ...)
         end)
-        print("[MACRO DEBUG] UpgradeTower hook successful!")
-    end)
 
-    if not hookSuccess2 then
-        print("[MACRO DEBUG] ERROR: Failed to hook UpgradeTower!")
+        namecallHook = oldNamecall
+        print("[MACRO DEBUG] __namecall hook installed successfully!")
+    else
+        print("[MACRO DEBUG] WARNING: hookmetamethod not available!")
     end
 
-    print("[MACRO DEBUG] Recording setup complete. Hooks active:", hookSuccess1, hookSuccess2)
+    print("[MACRO DEBUG] Recording setup complete")
+    if spyModeEnabled then
+        SendNotification("Spy Mode Active", "All RemoteFunction calls will be logged")
+    end
 end
 
 local function stopRecording()
@@ -383,6 +543,22 @@ function MacroRecorder:Init(window)
     local MacroTab = window:Tab({
         Title = "Macro Recorder",
         Icon = "rbxassetid://10734950309"
+    })
+
+    MacroTab:Toggle({
+        Title = "Remote Spy Mode",
+        Desc = "Log ALL RemoteFunction calls for debugging",
+        Value = false,
+        Callback = function(value)
+            spyModeEnabled = value
+            if value then
+                print("[MACRO SPY] Spy Mode ENABLED - All RemoteFunction calls will be logged")
+                SendNotification("Spy Mode", "Enabled - Check console for remote calls")
+            else
+                print("[MACRO SPY] Spy Mode DISABLED")
+                SendNotification("Spy Mode", "Disabled")
+            end
+        end
     })
 
     MacroTab:Input({

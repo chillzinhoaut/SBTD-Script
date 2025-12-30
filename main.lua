@@ -22,7 +22,7 @@ local GITHUB_CONFIG = {
     Username = "chillzinhoaut",
     Repository = "SBTD-Script",
     Branch = "main",
-    Version = "1.4.1",  -- WICHTIG: Erhöhe diese Nummer bei jedem Update für sofortige Änderungen!
+    Version = "1.4.2",  -- WICHTIG: Erhöhe diese Nummer bei jedem Update für sofortige Änderungen!
 }
 
 -- Basis-URL für Module mit Cache-Busting
