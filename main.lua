@@ -22,7 +22,7 @@ local GITHUB_CONFIG = {
     Username = "chillzinhoaut",
     Repository = "SBTD-Script",
     Branch = "main",
-    Version = "1.0.1",  -- WICHTIG: Erhöhe diese Nummer bei jedem Update für sofortige Änderungen!
+    Version = "1.1.0",  -- WICHTIG: Erhöhe diese Nummer bei jedem Update für sofortige Änderungen!
 }
 
 -- Basis-URL für Module mit Cache-Busting
@@ -106,6 +106,15 @@ if Modules.RewardClaimer then
 else
     warn("[MASTER] Reward Claimer Modul konnte nicht geladen werden!")
     warn("[MASTER] Überprüfe die GitHub-Konfiguration und stelle sicher, dass modules/reward_claimer.lua existiert!")
+end
+
+-- Crates Opener Modul laden
+Modules.CratesOpener = LoadModule("crates_opener")
+
+if Modules.CratesOpener then
+    Modules.CratesOpener:Init(Window)
+else
+    warn("[MASTER] Crates Opener Modul konnte nicht geladen werden!")
 end
 
 -- Hier können weitere Module geladen werden:
