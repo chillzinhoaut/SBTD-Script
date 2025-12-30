@@ -97,7 +97,7 @@ function LobbyFeatures.Prestige()
 end
 
 -- Modul-Initialisierung
-function LobbyFeatures:Init(window, automationTab)
+function LobbyFeatures:Init(window, automationTab, lobbySection)
     print("[LOBBY FEATURES] Modul wird initialisiert...")
 
     -- Services initialisieren
@@ -106,57 +106,22 @@ function LobbyFeatures:Init(window, automationTab)
         return
     end
 
-    -- Verwende den übergebenen Automation Tab
-    local AutomationTab = automationTab
+    -- Verwende die übergebene Lobby Section
+    local LobbySection = lobbySection
 
-    -- Lobby Section erstellen
-    local LobbySection = AutomationTab:Section({
-        Title = "Lobby"
-    })
-
-    -- Auto Claim Daily Achievements
+    -- Auto Claim ALL Achievements (kombiniert alle 4 Typen)
     LobbySection:Toggle({
-        Title = "Auto Claim Daily Achievements",
-        Description = "Claimt automatisch alle täglichen Achievements",
+        Title = "Auto Claim Achievements",
+        Description = "Claimt alle Achievements (Daily, Weekly, Infinite, Party)",
         Default = false,
         Callback = function(value)
             if value then
                 LobbyFeatures.ClaimAchievements("Daily")
-            end
-        end
-    })
-
-    -- Auto Claim Weekly Achievements
-    LobbySection:Toggle({
-        Title = "Auto Claim Weekly Achievements",
-        Description = "Claimt automatisch alle wöchentlichen Achievements",
-        Default = false,
-        Callback = function(value)
-            if value then
+                task.wait(0.1)
                 LobbyFeatures.ClaimAchievements("Weekly")
-            end
-        end
-    })
-
-    -- Auto Claim Infinite Achievements
-    LobbySection:Toggle({
-        Title = "Auto Claim Infinite Achievements",
-        Description = "Claimt automatisch alle Infinite Achievements",
-        Default = false,
-        Callback = function(value)
-            if value then
+                task.wait(0.1)
                 LobbyFeatures.ClaimAchievements("Infinite")
-            end
-        end
-    })
-
-    -- Auto Claim Party Achievements
-    LobbySection:Toggle({
-        Title = "Auto Claim Party Achievements",
-        Description = "Claimt automatisch alle Party Achievements",
-        Default = false,
-        Callback = function(value)
-            if value then
+                task.wait(0.1)
                 LobbyFeatures.ClaimAchievements("Party")
             end
         end

@@ -95,22 +95,17 @@ local function ClaimLoop()
 end
 
 -- Modul-Initialisierung
-function RewardClaimer:Init(window, automationTab)
+function RewardClaimer:Init(window, automationTab, lobbySection)
     print("[REWARD CLAIMER] Modul wird initialisiert...")
 
     -- Setup Blocker beim Start
     SetupRewardBlocker()
 
-    -- Verwende den übergebenen Automation Tab
-    local AutomationTab = automationTab
-
-    -- Erstelle Hauptsektion
-    local MainSection = AutomationTab:Section({
-        Title = "Daily Rewards"
-    })
+    -- Verwende die übergebene Lobby Section
+    local LobbySection = lobbySection
 
     -- Toggle für Auto-Claim
-    local ClaimToggle = MainSection:Toggle({
+    local ClaimToggle = LobbySection:Toggle({
         Title = "Auto Claim Timed Rewards",
         Description = "Claimt automatisch alle Daily Rewards (1-9) im Loop",
         Default = false,
