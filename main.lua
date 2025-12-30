@@ -22,9 +22,10 @@ local GITHUB_CONFIG = {
     Username = "chillzinhoaut",
     Repository = "SBTD-Script",
     Branch = "main",
+    Version = "1.0.1",  -- WICHTIG: Erhöhe diese Nummer bei jedem Update für sofortige Änderungen!
 }
 
--- Basis-URL für Module
+-- Basis-URL für Module mit Cache-Busting
 local MODULE_BASE_URL = string.format(
     "https://raw.githubusercontent.com/%s/%s/%s/modules/",
     GITHUB_CONFIG.Username,
@@ -32,16 +33,19 @@ local MODULE_BASE_URL = string.format(
     GITHUB_CONFIG.Branch
 )
 
+-- Cache-Busting Parameter
+local CACHE_BUSTER = "?v=" .. GITHUB_CONFIG.Version
+
 -- ============================================================
 -- MODULE LOADER
 -- ============================================================
 
 local Modules = {}
 
--- Hilfsfunktion: Modul von GitHub laden
+-- Hilfsfunktion: Modul von GitHub laden (mit Cache-Busting)
 local function LoadModule(moduleName)
-    local url = MODULE_BASE_URL .. moduleName .. ".lua"
-    print(string.format("[MODULE LOADER] Lade Modul: %s", moduleName))
+    local url = MODULE_BASE_URL .. moduleName .. ".lua" .. CACHE_BUSTER
+    print(string.format("[MODULE LOADER] Lade Modul: %s (Version: %s)", moduleName, GITHUB_CONFIG.Version))
     print(string.format("[MODULE LOADER] URL: %s", url))
 
     local success, result = pcall(function()
@@ -77,7 +81,7 @@ InfoSection:Section({
 })
 
 InfoSection:Section({
-    Title = "Version: 1.0 | Multi-Modular System",
+    Title = "Version: " .. GITHUB_CONFIG.Version .. " | Multi-Modular System",
     TextSize = 14,
     TextTransparency = 0.35,
 })
