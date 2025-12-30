@@ -95,17 +95,14 @@ local function ClaimLoop()
 end
 
 -- Modul-Initialisierung
-function RewardClaimer:Init(window)
+function RewardClaimer:Init(window, automationTab)
     print("[REWARD CLAIMER] Modul wird initialisiert...")
 
     -- Setup Blocker beim Start
     SetupRewardBlocker()
 
-    -- Erstelle Automation Tab
-    local AutomationTab = window:Tab({
-        Title = "Automation",
-        Icon = "rbxassetid://10734950309" -- Zahnrad/Gear Icon
-    })
+    -- Verwende den übergebenen Automation Tab
+    local AutomationTab = automationTab
 
     -- Erstelle Hauptsektion
     local MainSection = AutomationTab:Section({

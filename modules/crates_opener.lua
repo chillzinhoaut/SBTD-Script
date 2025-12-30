@@ -3,6 +3,7 @@
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local StarterGui = game:GetService("StarterGui")
 local LocalPlayer = Players.LocalPlayer
 
 local CratesOpener = {}
@@ -66,6 +67,22 @@ local function CountTotalCrates()
     return total
 end
 
+-- Hilfsfunktion: In-Game Notification senden
+local function SendNotification(title, text, duration)
+    local success = pcall(function()
+        StarterGui:SetCore("SendNotification", {
+            Title = title,
+            Text = text,
+            Duration = duration or 3,
+        })
+    end)
+
+    if not success then
+        -- Fallback auf Console-Print
+        print(string.format("[NOTIFICATION] %s: %s", title, text))
+    end
+end
+
 -- Haupt-Öffnungs-Funktion (öffnet EINE Kiste)
 local function OpenNextCrate()
     local success, result = pcall(function()
@@ -84,8 +101,16 @@ local function OpenNextCrate()
                     local remaining = currentAmount - 1
                     local totalRemaining = CountTotalCrates() - 1
 
+                    -- Console Output
                     print(string.format("[CRATES OPENER] ✓ %s geöffnet | Verbleibend: %d (Total: %d)",
                         item.Name, remaining, totalRemaining))
+
+                    -- In-Game Notification
+                    SendNotification(
+                        "Crate Opened",
+                        string.format("%s geöffnet\n%d übrig (Total: %d)", item.Name, remaining, totalRemaining),
+                        2
+                    )
 
                     return {
                         success = true,
@@ -115,6 +140,7 @@ local function OpeningLoop()
 
         if totalCrates == 0 then
             print("[CRATES OPENER] 🎉 Inventory cleared - Alle Crates geöffnet!")
+            SendNotification("Inventory Cleared", "Alle Crates wurden geöffnet! 🎉", 4)
             CratesOpener.Enabled = false
             break
         end
@@ -138,17 +164,14 @@ local function OpeningLoop()
 end
 
 -- Modul-Initialisierung
-function CratesOpener:Init(window)
+function CratesOpener:Init(window, automationTab)
     print("[CRATES OPENER] Modul wird initialisiert...")
 
     -- Whitelist updaten
     UpdateWhitelist()
 
-    -- Automation Tab holen (wird vom reward_claimer erstellt)
-    local AutomationTab = window:Tab({
-        Title = "Automation",
-        Icon = "rbxassetid://10734950309"
-    })
+    -- Verwende den übergebenen Automation Tab
+    local AutomationTab = automationTab
 
     -- Crates Section erstellen
     local CratesSection = AutomationTab:Section({

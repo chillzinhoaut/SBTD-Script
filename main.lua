@@ -22,7 +22,7 @@ local GITHUB_CONFIG = {
     Username = "chillzinhoaut",
     Repository = "SBTD-Script",
     Branch = "main",
-    Version = "1.1.0",  -- WICHTIG: Erhöhe diese Nummer bei jedem Update für sofortige Änderungen!
+    Version = "1.1.1",  -- WICHTIG: Erhöhe diese Nummer bei jedem Update für sofortige Änderungen!
 }
 
 -- Basis-URL für Module mit Cache-Busting
@@ -93,6 +93,15 @@ InfoSection:Section({
 })
 
 -- ============================================================
+-- AUTOMATION TAB (Shared by all automation modules)
+-- ============================================================
+
+local AutomationTab = Window:Tab({
+    Title = "Automation",
+    Icon = "rbxassetid://10734950309"
+})
+
+-- ============================================================
 -- MODULE LOADING
 -- ============================================================
 
@@ -102,7 +111,7 @@ print("[MASTER] Lade Module von GitHub...")
 Modules.RewardClaimer = LoadModule("reward_claimer")
 
 if Modules.RewardClaimer then
-    Modules.RewardClaimer:Init(Window)
+    Modules.RewardClaimer:Init(Window, AutomationTab)
 else
     warn("[MASTER] Reward Claimer Modul konnte nicht geladen werden!")
     warn("[MASTER] Überprüfe die GitHub-Konfiguration und stelle sicher, dass modules/reward_claimer.lua existiert!")
@@ -112,7 +121,7 @@ end
 Modules.CratesOpener = LoadModule("crates_opener")
 
 if Modules.CratesOpener then
-    Modules.CratesOpener:Init(Window)
+    Modules.CratesOpener:Init(Window, AutomationTab)
 else
     warn("[MASTER] Crates Opener Modul konnte nicht geladen werden!")
 end
