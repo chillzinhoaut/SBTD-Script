@@ -135,14 +135,16 @@ function RewardClaimer:Init(window)
         Title = "ℹ️ Information"
     })
 
-    InfoSection:Label({
+    InfoSection:Section({
         Title = "Das Script claimt alle 60 Sekunden die Rewards 1-9",
-        TextSize = 14
+        TextSize = 14,
+        TextTransparency = 0.35,
     })
 
-    InfoSection:Label({
+    InfoSection:Section({
         Title = "Popups und Animationen werden automatisch blockiert",
-        TextSize = 14
+        TextSize = 14,
+        TextTransparency = 0.35,
     })
 
     print("[REWARD CLAIMER] Modul erfolgreich geladen!")

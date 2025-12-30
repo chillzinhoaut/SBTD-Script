@@ -70,19 +70,22 @@ local InfoSection = MainTab:Section({
     Title = "Script Information",
 })
 
-InfoSection:Label({
+InfoSection:Section({
     Title = "Welcome to Spongebob Tower Defense Script",
-    TextSize = 16
+    TextSize = 16,
+    TextTransparency = 0.35,
 })
 
-InfoSection:Label({
+InfoSection:Section({
     Title = "Version: 1.0 | Multi-Modular System",
-    TextSize = 14
+    TextSize = 14,
+    TextTransparency = 0.35,
 })
 
-InfoSection:Label({
+InfoSection:Section({
     Title = "Module werden von GitHub geladen...",
-    TextSize = 12
+    TextSize = 12,
+    TextTransparency = 0.35,
 })
 
 -- ============================================================
