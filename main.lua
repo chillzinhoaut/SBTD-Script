@@ -22,7 +22,7 @@ local GITHUB_CONFIG = {
     Username = "chillzinhoaut",
     Repository = "SBTD-Script",
     Branch = "main",
-    Version = "1.1.1",  -- WICHTIG: Erhöhe diese Nummer bei jedem Update für sofortige Änderungen!
+    Version = "1.2.0",  -- WICHTIG: Erhöhe diese Nummer bei jedem Update für sofortige Änderungen!
 }
 
 -- Basis-URL für Module mit Cache-Busting
@@ -126,9 +126,18 @@ else
     warn("[MASTER] Crates Opener Modul konnte nicht geladen werden!")
 end
 
+-- Lobby Features Modul laden
+Modules.LobbyFeatures = LoadModule("lobby_features")
+
+if Modules.LobbyFeatures then
+    Modules.LobbyFeatures:Init(Window, AutomationTab)
+else
+    warn("[MASTER] Lobby Features Modul konnte nicht geladen werden!")
+end
+
 -- Hier können weitere Module geladen werden:
 -- Modules.TowerHelper = LoadModule("tower_helper")
--- if Modules.TowerHelper then Modules.TowerHelper:Init(Window) end
+-- if Modules.TowerHelper then Modules.TowerHelper:Init(Window, AutomationTab) end
 
 print("=== SPONGEBOB TD SCRIPT ERFOLGREICH GELADEN ===")
 print("Module aktiv:", #Modules, "| Viel Spaß!")

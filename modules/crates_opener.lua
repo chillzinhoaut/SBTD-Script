@@ -202,23 +202,6 @@ function CratesOpener:Init(window, automationTab)
         end
     })
 
-    -- Info Sektion
-    local InfoSection = AutomationTab:Section({
-        Title = "ℹ️ Crates Info"
-    })
-
-    InfoSection:Section({
-        Title = "Öffnet: Epic, Legendary, Mythic, Exotic & RNG Rolls",
-        TextSize = 14,
-        TextTransparency = 0.35,
-    })
-
-    InfoSection:Section({
-        Title = "Notification bei jeder geöffneten Chest",
-        TextSize = 14,
-        TextTransparency = 0.35,
-    })
-
     print("[CRATES OPENER] Modul erfolgreich geladen!")
 end
 

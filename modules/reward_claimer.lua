@@ -127,23 +127,6 @@ function RewardClaimer:Init(window, automationTab)
         end
     })
 
-    -- Info Sektion
-    local InfoSection = AutomationTab:Section({
-        Title = "ℹ️ Information"
-    })
-
-    InfoSection:Section({
-        Title = "Das Script claimt alle 60 Sekunden die Rewards 1-9",
-        TextSize = 14,
-        TextTransparency = 0.35,
-    })
-
-    InfoSection:Section({
-        Title = "Popups und Animationen werden automatisch blockiert",
-        TextSize = 14,
-        TextTransparency = 0.35,
-    })
-
     print("[REWARD CLAIMER] Modul erfolgreich geladen!")
 end
 
